@@ -1,0 +1,47 @@
+# --- Never commit proprietary binaries or anyone's captured data ---
+# Samsung / Google software you supply for analysis stays local. Only our own
+# findings (written in our words) and our own interop code belong in git.
+
+tools/inputs/*
+!tools/inputs/.gitkeep
+!tools/inputs/README.md
+
+# Decompiled / extracted output from analysis
+tools/work/
+tools/out/
+*.apk
+*.apks
+*.xapk
+*.dex
+*.odex
+*.vdex
+*.smali
+*.jar
+!tools/scripts/*.jar.sha256   # we only track the pinned digest, never the jar
+
+# Captured traffic from your own devices
+*.log
+*.pcap
+*.pcapng
+btsnoop*
+*hci*.log
+
+# REA / JADX engine (downloaded locally per setup script, SHA-pinned)
+.rea/
+jadx-headless-mcp-*.jar
+
+# Android build
+*.iml
+.gradle/
+local.properties
+/build/
+**/build/
+captures/
+.externalNativeBuild/
+.cxx/
+
+# Editor / OS
+.idea/
+.vscode/
+.DS_Store
+*.swp
