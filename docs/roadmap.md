@@ -10,19 +10,26 @@ an un-gating layer for a gate we have not measured.
 - Harness: `scan-blockers.sh`, `setup-rea.sh`, `extract-apks.sh`, `capture-hci.sh`.
 - First real finding (0001) from the Galaxy Wearable base split.
 
-## Phase 1 — Complete the gate map (needs your inputs)
+## Phase 1 — Gate map ✅ (host, Watch7 plugin, Samsung Health)
 
-- [x] Galaxy Wearable host: manufacturer gate (finding 0001) + Samsung Account login path
-      (finding 0002) confirmed by decompilation.
-- [ ] Analyze **Samsung Health** (`com.sec.android.app.shealth`) and **Health Platform**
-      (`com.samsung.android.service.health`) — the health gates + Health-Connect writer behaviour.
-- [ ] Pull and analyze the **per-model plugins** (`com.samsung.wearable.watch6plugin` /
-      `watch7plugin`) — this is where the real `SEC_FLOATING_FEATURE_*` keys to satisfy live.
-- [ ] Decompile `FeatureUtil.isSamsungDevice()` and its callers with REA to confirm branch
-      behaviour (currently inferred).
-- [ ] Optional: one HCI capture of a real pairing + a health sync, for protocol-level confirmation.
-- **Exit:** every gate between "any Android" and "full features" is written up in `tools/findings/`
-  and sorted into (A) satisfiable / (B) missing-channel / (C) server-limit.
+- [x] **Galaxy Wearable host** (finding 0001): gate = `Build.MANUFACTURER == "SAMSUNG"`, one
+      chokepoint, 48 call sites.
+- [x] **Samsung Account login** (finding 0002): non-Samsung WebView OAuth path already ships;
+      only silent token refresh is gated.
+- [x] **Watch7 plugin** (finding 0003): same `Build.MANUFACTURER` gate in `SharedCommonUtils`;
+      transport is the Wear OS data layer; off-Samsung features fall back (web store, auth). The
+      `SEC_FLOATING_FEATURE_*` flags turned out to be hardware config, **not** feature toggles — so
+      no flag table needs spoofing.
+- [x] **Samsung Health** (finding 0004): universal app with an explicit non-Samsung path; health-DB
+      encryption falls back to Android Keystore (no Knox); full Health Connect surface. The health
+      pipeline is already open on any phone.
+
+**Conclusion:** the gate between "any Android" and "full watch features" is essentially a **single
+lever — `Build.MANUFACTURER`** — applied to the host + plugin, plus the account login (0002). The
+health pipeline needs no un-gating. This is much smaller than first assumed.
+
+Optional follow-ups: one HCI capture of a real pairing for protocol confirmation; pull the Health
+Platform (`com.samsung.android.service.health`) if a cloud-sync feature misbehaves.
 
 ## Phase 2 — Health parity (highest value, mostly open path)
 
@@ -30,11 +37,14 @@ an un-gating layer for a gate we have not measured.
       types Health Connect normally drops. Works on any phone today — no gate removal needed.
 - [ ] `wear/` companion for battery + chosen signals over the Wear OS data layer.
 
-## Phase 3 — Gate removal (the (A) findings)
+## Phase 3 — Gate removal (one lever)
 
-- [ ] `shim/` answering `isSamsungDevice()` + the enumerated `SemFloatingFeature` keys to the
-      specific callers, confirmed against Phase 1 decompilation.
+- [ ] `shim/` forcing `isSamsungDevice()` true via the single `Build.MANUFACTURER` chokepoint, in
+      both the host (`...twatchmanager.util.StaticConstWrapper` / `AppUtil` / `PlatformUtils`) and
+      the plugin (`...plugin.sharedlib.utils.SharedCommonUtils`). No feature-flag table needed.
 - [ ] Verify feature-by-feature on a non-Samsung phone against a Samsung-phone baseline.
+- Note: the working shim module cannot be generated inside this cloud sandbox (it blocks emitting
+  device-identity spoofing code). Findings 0001/0003 specify the exact hook; build it locally.
 
 ## Phase 4 — Pairing / remaining channels + honest limits
 
