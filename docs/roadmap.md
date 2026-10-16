@@ -12,6 +12,8 @@ an un-gating layer for a gate we have not measured.
 
 ## Phase 1 — Complete the gate map (needs your inputs)
 
+- [x] Galaxy Wearable host: manufacturer gate (finding 0001) + Samsung Account login path
+      (finding 0002) confirmed by decompilation.
 - [ ] Analyze **Samsung Health** (`com.sec.android.app.shealth`) and **Health Platform**
       (`com.samsung.android.service.health`) — the health gates + Health-Connect writer behaviour.
 - [ ] Pull and analyze the **per-model plugins** (`com.samsung.wearable.watch6plugin` /
@@ -26,7 +28,7 @@ an un-gating layer for a gate we have not measured.
 
 - [ ] `health/` bridge: read watch data, write the full type set to Health Connect, incl. the
       types Health Connect normally drops. Works on any phone today — no gate removal needed.
-- [ ] `wear/` companion reused from Halo for battery + chosen signals.
+- [ ] `wear/` companion for battery + chosen signals over the Wear OS data layer.
 
 ## Phase 3 — Gate removal (the (A) findings)
 

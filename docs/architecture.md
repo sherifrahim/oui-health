@@ -41,14 +41,21 @@ plus a direct Samsung Health read for the data types Health Connect drops (HRV, 
 ECG — see protocol-landscape). Mirrors Samsung Health's own Health-Connect writer so apps see
 parity regardless of phone brand.
 
-### 3. Wear companion (`wear/`) — fills gaps over the data layer
+### 3. Account bridge (`account/`) — Samsung sign-in off-Samsung
 
-A small Wear OS app (shared with the sibling **Halo** project's `WearBridge`) that reports what the
-standard profiles don't — battery, and any watch-side signal we choose to surface — over
-`MessageClient`/`DataClient`. Works on any phone because it rides Google's Wear OS link, not
-Samsung's.
+Confirmed in finding 0002: the host already ships a non-Samsung WebView OAuth path
+(`SAWebViewActivity` → `account.samsung.com/.../signInGate`, client_id `39kc4o8c10`). Interactive
+login works today; the only gap is silent token refresh. This component either (a) satisfies
+`isSamsungDevice()` + relies on the installable Samsung Account app `com.osp.app.signin` for
+on-device refresh, or (b) persists and re-runs the web flow before token expiry. Always the user's
+real account via official OAuth — never a forged or minted token.
 
-### 4. Connection/pairing assist (`pairing/`)
+### 4. Wear companion (`wear/`) — fills gaps over the data layer
+
+A small Wear OS app that reports what the standard profiles don't, over `MessageClient`/`DataClient`.
+Works on any phone because it rides Google's Wear OS link, not Samsung's.
+
+### 5. Connection/pairing assist (`pairing/`)
 
 Where the host's pairing flow (`twatchmanager.setupwizard.*`, `connectionmanager.*`) degrades on
 non-Samsung, provide the missing step. Scope depends on findings from the per-model plugins.
@@ -62,8 +69,8 @@ non-Samsung, provide the missing step. Scope depends on findings from the per-mo
   or clean-room peer may be rejected; the shim approach (satisfy the environment of the *real*
   package) avoids this where feasible.
 
-## Relationship to Halo
+## Scope
 
-[Halo](https://github.com/sherifrahim/Halo-battery-Widget) already does Bluetooth battery +
-Wear OS battery via a companion. oui-health reuses that `WearBridge` pattern for component 3 and
-focuses on the health + gate-removal pieces Halo doesn't cover.
+oui-health is a standalone project: reverse-engineer **Samsung Wearable + Samsung Health** and make
+a Galaxy Watch work 100% on a non-Samsung phone, including Samsung Account sign-in. It is not tied
+to any other app.

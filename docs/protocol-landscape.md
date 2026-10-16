@@ -76,8 +76,7 @@ Independently of the gates above, health data has a documented route to **every*
 
 - Android's own reported level (status-bar battery) and standard **BLE Battery Service 0x180F**.
 - The **Wear OS data layer** (`MessageClient` / `DataClient`) for a small watch-side companion to
-  report what the standard profiles don't. This is exactly the mechanism the sibling **Halo** app
-  already uses for Wear OS watch battery, and oui-health reuses that bridge.
+  report what the standard profiles don't (e.g. Wear OS watch battery).
 
 ## Sources
 
