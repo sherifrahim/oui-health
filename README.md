@@ -72,6 +72,7 @@ Two independent routes, used together:
 ## Repository layout
 
 ```
+app/                    Android app: reads watch health data via Health Connect on ANY phone
 docs/
   protocol-landscape.md   What is known (and from where) about how Galaxy Watch 4+ talks to a phone
   blocker-hunt.md         The concrete reverse-engineering plan: every gate to find in the APKs

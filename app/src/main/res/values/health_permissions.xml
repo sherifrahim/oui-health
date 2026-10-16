@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="health_permissions_rationale">oui-health reads your watch\'s heart rate, SpO2, sleep, steps and workouts from Health Connect so they are usable on this phone.</string>
+</resources>
