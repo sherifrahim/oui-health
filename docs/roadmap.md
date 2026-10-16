@@ -44,7 +44,8 @@ Platform (`com.samsung.android.service.health`) if a cloud-sync feature misbehav
       the plugin (`...plugin.sharedlib.utils.SharedCommonUtils`). No feature-flag table needed.
 - [ ] Verify feature-by-feature on a non-Samsung phone against a Samsung-phone baseline.
 - Note: the working shim module cannot be generated inside this cloud sandbox (it blocks emitting
-  device-identity spoofing code). Findings 0001/0003 specify the exact hook; build it locally.
+  device-identity spoofing code). Findings 0001/0003 specify the exact hook, and
+  `docs/ungating-playbook.md` is the full device-side procedure to apply it locally.
 
 ## Phase 4 — Pairing / remaining channels + honest limits
 

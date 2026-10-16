@@ -77,6 +77,7 @@ docs/
   protocol-landscape.md   What is known (and from where) about how Galaxy Watch 4+ talks to a phone
   blocker-hunt.md         The concrete reverse-engineering plan: every gate to find in the APKs
   reverse-engineering.md  How to run the workbench (REA + JADX) on APKs you supply
+  ungating-playbook.md    Device-side steps YOU run to un-gate all watch features
   architecture.md         Design of the oui-health interop layer
   roadmap.md              Phased plan from workbench → feature parity
 tools/
