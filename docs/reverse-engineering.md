@@ -24,9 +24,26 @@ produced [`tools/findings/0001`](../tools/findings/0001-galaxy-wearable-manufact
 Work through the checklist in [`blocker-hunt.md`](blocker-hunt.md) and write up each real gate in
 `tools/findings/` using the template.
 
-## 2. Second pass — evidence-bound decompilation (REA)
+## 2. Second pass — decompile the gate logic
 
-String literals locate a gate; to see the **branch logic** you need decompiled methods.
+String literals locate a gate; to see the **branch logic** you need decompiled methods. Two routes
+— use whichever your environment allows.
+
+### 2a. androguard (pure-Python, no third-party jar) — used to confirm finding 0001
+
+```bash
+pip install androguard colorama
+# decompile named methods across the APK (reads it as data, never executes it):
+LOGURU_LEVEL=CRITICAL python3 tools/scripts/decompile_targets.py \
+    tools/inputs/GalaxyWearable.apk isSamsungDevice getManufacturer isSupportedNonSamsungDevice
+# or the gate-class sweep + caller graph:
+LOGURU_LEVEL=CRITICAL python3 tools/scripts/decompile_gates.py tools/inputs/GalaxyWearable.apk
+```
+
+androguard installs from PyPI (allowed in most sandboxes), so this is the route that works when the
+REA engine jar download is blocked. It produced every decompiled method in finding 0001.
+
+### 2b. REA (evidence-bound, richer) — on your own machine
 
 ```bash
 tools/scripts/setup-rea.sh        # one-time: pins + verifies the JADX engine jar
